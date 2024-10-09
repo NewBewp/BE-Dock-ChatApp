@@ -1,6 +1,6 @@
 package com.example.springbase.record;
 
-public record VerifyEmailRecord(
+public record EmailSignInRecord(
         String email,
         String otp) {
 }

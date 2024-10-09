@@ -6,6 +6,7 @@ import com.example.springbase.exception.ErrorHandler;
 import com.example.springbase.exception.ExceptionResponse;
 import com.example.springbase.jwt.JwtService;
 import com.example.springbase.model.RequestResponse;
+import com.example.springbase.record.EmailSignInRecord;
 import com.example.springbase.record.RegisterRecord;
 import com.example.springbase.record.SignInRecord;
 import com.example.springbase.record.VerifyEmailRecord;
@@ -70,11 +71,31 @@ public class AuthenticationController {
             throw new ErrorHandler(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to send change password link.");
         }
     }
+
     @PostMapping("/verify-email")
     @PreAuthorize(AuthConstants.NONE)
     public ResponseEntity<?> verifyEmail(@RequestBody VerifyEmailRecord record) {
-        Boolean isVerified = userService.verifyEmail(record.email(),record.otp());
-        return ResponseEntity.status(HttpStatus.OK).body(new RequestResponse("Your email verify successfully", isVerified));
+        Boolean isVerified = userService.verifyEmail(record.email(), record.otp());
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new RequestResponse("Your email verify successfully", isVerified));
     }
 
+    @PostMapping("/sign-up-email")
+    @PreAuthorize(AuthConstants.NONE)
+    @Transactional
+    public ResponseEntity<?> registerWithEmail(@RequestParam String email) {
+        User user = userService.signUpWithEmail(email);
+        return ResponseEntity.status(HttpStatus.OK).body(new RequestResponse(
+                "Register successfully, please check your email to verify your account.", user));
+    }
+
+    @PostMapping("/sign-in-email")
+    @PreAuthorize(AuthConstants.NONE)
+    public ResponseEntity<?> loginWithEmail(@RequestBody EmailSignInRecord emailLoginRecord){
+        TokenDTO dto = userService.signInWithEmail(emailLoginRecord);
+        if (dto !=null) 
+            return ResponseEntity.status(HttpStatus.OK).body(new RequestResponse("Sign in successful", dto));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                     .body(new ExceptionResponse("Invalid OTP"));
+    }
 }

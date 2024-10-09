@@ -18,9 +18,7 @@ import java.util.Collections;
 @Table(name = "tbl_user")
 @DynamicInsert
 public class User extends TimeInfoEntityDefine implements Serializable, UserDetails {
-    @Column(unique = true, nullable = false)
     private String username;
-    @Column(nullable = false)
     private String password;
     @Column(nullable = false)
     private String email;

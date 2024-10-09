@@ -5,6 +5,7 @@ import com.example.springbase.entity.User;
 import com.example.springbase.exception.ErrorHandler;
 import com.example.springbase.generic.IRepository;
 import com.example.springbase.jwt.JwtService;
+import com.example.springbase.record.EmailSignInRecord;
 import com.example.springbase.record.RegisterRecord;
 import com.example.springbase.record.SignInRecord;
 import com.example.springbase.repository.UserRepository;
@@ -53,7 +54,7 @@ public class UserServiceImpl extends AbstractService<User, String> implements Us
 
     @Autowired
     private JwtService jwtService;
-    
+
     // Chứa code otp xác thực với email
     Map<String, String> verifycationCodes = new ConcurrentHashMap<>();
 
@@ -74,6 +75,17 @@ public class UserServiceImpl extends AbstractService<User, String> implements Us
     @Override
     public TokenDTO signIn(SignInRecord record) {
         String accessToken = null;
+
+        User user = userRepository.findByUsername(record.username()).orElseThrow(
+                () -> new ErrorHandler(HttpStatus.UNAUTHORIZED, "Invalid username or password"));
+
+        log.info("isEmailVerified:  {}", user.isEmailVerified());
+
+        if (!user.isEmailVerified()) {
+            throw new ErrorHandler(HttpStatus.UNAUTHORIZED,
+                    "Email not verified. Please verify your email before signing in.");
+        }
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(record.username(), record.password()));
         if (authentication.isAuthenticated()) {
@@ -81,6 +93,7 @@ public class UserServiceImpl extends AbstractService<User, String> implements Us
             account.setUsername(authentication.getName());
             accessToken = jwtService.generateToken(account);
         }
+
         // missing refresh token
         if (accessToken != null) {
             return new TokenDTO(accessToken);
@@ -102,8 +115,7 @@ public class UserServiceImpl extends AbstractService<User, String> implements Us
         user.setEmail(record.email());
         user.setEmailVerified(false);
 
-        log.info("email: {}", record.email());
-        //Tạo otp 
+        // Tạo otp
         String otp = genarateVericationCode();
         verifycationCodes.put(record.email(), otp);
 
@@ -138,8 +150,6 @@ public class UserServiceImpl extends AbstractService<User, String> implements Us
                 () -> new ErrorHandler(HttpStatus.NOT_FOUND, "User not found"));
     }
 
-    
-
     public String genarateVericationCode() {
         SecureRandom random = new SecureRandom();
 
@@ -160,13 +170,13 @@ public class UserServiceImpl extends AbstractService<User, String> implements Us
 
     @Override
     public Boolean verifyEmail(String email, String otp) {
-        //Kiểm tra có tồn tại mã OTP theo email 
+        // Kiểm tra có tồn tại mã OTP theo email
         String storedOtp = getVerificationCode(email);
-        if(storedOtp == null){
+        if (storedOtp == null) {
             throw new ErrorHandler(HttpStatus.BAD_REQUEST, "No OTP found for this email.");
         }
         // So sánh OTP có khớp không ?
-        if(!storedOtp.equals(otp)){
+        if (!storedOtp.equals(otp)) {
             throw new ErrorHandler(HttpStatus.BAD_REQUEST, "Invalid OTP.");
         }
         // Nếu mã OTP hợp lệ cặp nhật emailVerified của người dùng
@@ -174,10 +184,51 @@ public class UserServiceImpl extends AbstractService<User, String> implements Us
         user.setEmailVerified(true);
         userRepository.save(user);
 
-        // Xóa mã OTP sau khi xác thực thành công 
+        // Xóa mã OTP sau khi xác thực thành công
         clearVerificationCode(email);
 
         return true;
+    }
+
+    @Override
+    public User signUpWithEmail(String email) {
+        Optional<User> usersOptional = userRepository.findByEmail(email);
+        if (usersOptional.isPresent()) {
+            throw new ErrorHandler(HttpStatus.BAD_REQUEST, "Email already exsts.");
+        }
+
+        User user = new User();
+        user.setEmail(email);
+        user.setEmailVerified(false); // Chưa xác thực
+        user.setIsDeleted(false); // Chưa bị xóa
+
+        String otp = genarateVericationCode();
+        verifycationCodes.put(email, otp);
+
+        mailService.sendWithTemplate(email, otp, EmailSubjectEnum.OTP, TypeMailEnum.OTP);
+
+        return save(user);
+    }
+
+    @Override
+    public TokenDTO signInWithEmail(EmailSignInRecord record) {
+        // Kiểm tra xem email có tồn tại không
+        User user = userRepository.findByEmail(record.email()).orElseThrow(
+                () -> new ErrorHandler(HttpStatus.UNAUTHORIZED, "Email not registered."));
+
+        // Kiểm tra otp
+        String storedOtp = getVerificationCode(record.email());
+        if (storedOtp == null || !storedOtp.equals(record.otp())) {
+            throw new ErrorHandler(HttpStatus.UNAUTHORIZED, "Invalid OTP.");
+        }
+
+        // Tạo token cho người dùng
+        String accessToken = jwtService.generateToken(user);
+
+        // Xóa mã OTP sau khi xác thực thành công
+        clearVerificationCode(record.email());
+
+        return new TokenDTO(accessToken);
     }
 
 }

@@ -57,7 +57,8 @@ public class SercurityConfig {
 //                                .requestMatchers("/api/*/*/admin/**").hasAuthority("ROLE_ADMIN")
 //                                .requestMatchers("/**").permitAll()
                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                                .requestMatchers("api/auth/sign-up", "api/auth/sign-in","api/auth/verify-email", "api/auth/forget-password").permitAll()
+                                .requestMatchers("api/auth/sign-up", "api/auth/sign-in","api/auth/verify-email", "api/auth/forget-password",
+                                                "api/auth/sign-up-email","api/auth/sign-in-email").permitAll()
                                 .anyRequest().authenticated()
                 )
                 //                .exceptionHandling(e -> {
