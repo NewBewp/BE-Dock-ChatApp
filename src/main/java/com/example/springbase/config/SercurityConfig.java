@@ -58,7 +58,7 @@ public class SercurityConfig {
 //                                .requestMatchers("/**").permitAll()
                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                                 .requestMatchers("api/auth/sign-up", "api/auth/sign-in","api/auth/verify-email", "api/auth/forget-password",
-                                                "api/auth/sign-up-email","api/auth/sign-in-email").permitAll()
+                                                "api/auth/sign-up-email","api/auth/sign-in-email","api/auth/request-otp").permitAll()
                                 .anyRequest().authenticated()
                 )
                 //                .exceptionHandling(e -> {
