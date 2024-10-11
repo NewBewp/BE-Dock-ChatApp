@@ -12,10 +12,10 @@ public class DataSourceConfig {
     private JdbcTemplate jdbcTemplate;
 
     //run before spring removes bean
-    @PreDestroy
-    public void cleanup() {
-        dropDatabaseIfExists();
-    }
+//    @PreDestroy
+//    public void cleanup() {
+//        dropDatabaseIfExists();
+//    }
 
     //query drop database after application terminate
     private void dropDatabaseIfExists() {
