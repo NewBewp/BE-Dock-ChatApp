@@ -28,6 +28,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -55,7 +56,7 @@ public class SercurityConfig {
 //                                .requestMatchers("/api/auth/**").permitAll()
 //                                .requestMatchers("/api/accounts/verifyEmail").permitAll()
 //                                .requestMatchers("/api/*/*/admin/**").hasAuthority("ROLE_ADMIN")
-//                                .requestMatchers("/**").permitAll()
+                                .requestMatchers("/**").permitAll()
                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                                 .requestMatchers("api/auth/sign-up", "api/auth/sign-in","api/auth/verify-email", "api/auth/forget-password",
                                                 "api/auth/sign-up-email","api/auth/sign-in-email","api/auth/request-otp").permitAll()
@@ -102,6 +103,21 @@ public class SercurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.addAllowedOrigin("http://localhost:3000");        // Chỉ định cụ thể nguồn gốc
+        config.addAllowedOrigin("http://47.129.183.26:3000");    // Chỉ định cụ thể nguồn gốc
+        config.addAllowedOrigin("https://dock.classlionvn.net/");    // Chỉ định cụ thể nguồn gốc
+        config.addAllowedMethod("*");
+        config.addAllowedHeader("*");
+        config.setAllowCredentials(true); // Cho phép gửi cookie cùng với request
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
     }
 
     //config security swagger
