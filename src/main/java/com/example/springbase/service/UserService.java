@@ -27,4 +27,7 @@ public interface UserService extends IService<User, String>, UserDetailsService 
 
     TokenDTO signInWithEmail(EmailSignInRecord record);
 
+    void requestOtpForLogin (String email);
+
+
 }

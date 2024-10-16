@@ -212,23 +212,34 @@ public class UserServiceImpl extends AbstractService<User, String> implements Us
 
     @Override
     public TokenDTO signInWithEmail(EmailSignInRecord record) {
-        // Kiểm tra xem email có tồn tại không
-        User user = userRepository.findByEmail(record.email()).orElseThrow(
-                () -> new ErrorHandler(HttpStatus.UNAUTHORIZED, "Email not registered."));
-
-        // Kiểm tra otp
+        // Kiểm tra mã OTP
         String storedOtp = getVerificationCode(record.email());
         if (storedOtp == null || !storedOtp.equals(record.otp())) {
             throw new ErrorHandler(HttpStatus.UNAUTHORIZED, "Invalid OTP.");
         }
 
         // Tạo token cho người dùng
+        User user = findByEmail(record.email());
         String accessToken = jwtService.generateToken(user);
 
         // Xóa mã OTP sau khi xác thực thành công
         clearVerificationCode(record.email());
 
         return new TokenDTO(accessToken);
+    }
+
+    @Override
+    public void requestOtpForLogin(String email) {
+        // Kiểm tra xem email có tồn tại không
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new ErrorHandler(HttpStatus.UNAUTHORIZED, "Email not registered."));
+
+        // Tạo mã OTP
+        String otp = genarateVericationCode();
+        verifycationCodes.put(email, otp); // Lưu mã OTP
+
+        // Gửi mã OTP đến email
+        mailService.sendWithTemplate(email, otp, EmailSubjectEnum.OTP, TypeMailEnum.OTP);
     }
 
 }

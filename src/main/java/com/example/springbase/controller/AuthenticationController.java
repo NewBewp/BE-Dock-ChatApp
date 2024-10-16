@@ -89,13 +89,22 @@ public class AuthenticationController {
                 "Register successfully, please check your email to verify your account.", user));
     }
 
+    @PostMapping("/request-otp")
+    @PreAuthorize(AuthConstants.NONE)
+    public ResponseEntity<?> requestOtp(@RequestParam String email) {
+        userService.requestOtpForLogin(email);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new RequestResponse("OTP has been sent to your email."));
+    }
+
     @PostMapping("/sign-in-email")
     @PreAuthorize(AuthConstants.NONE)
-    public ResponseEntity<?> loginWithEmail(@RequestBody EmailSignInRecord emailLoginRecord){
+    public ResponseEntity<?> loginWithEmail(@RequestBody EmailSignInRecord emailLoginRecord) {
         TokenDTO dto = userService.signInWithEmail(emailLoginRecord);
-        if (dto !=null) 
+        if (dto != null)
             return ResponseEntity.status(HttpStatus.OK).body(new RequestResponse("Sign in successful", dto));
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                     .body(new ExceptionResponse("Invalid OTP"));
+                .body(new ExceptionResponse("Invalid OTP"));
     }
+
 }

@@ -14,7 +14,7 @@ public class DataSourceConfig {
     //run before spring removes bean
     @PreDestroy
     public void cleanup() {
-        dropDatabaseIfExists();
+        // dropDatabaseIfExists();
     }
 
     //query drop database after application terminate
