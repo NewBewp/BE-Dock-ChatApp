@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="MainApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" activateToolWindowBeforeRun="false" focusToolWindowBeforeRun="true" nameIsGenerated="true">
-    <module name="springbase" />
+    <module name="springboot" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.springbase.MainApplication" />
     <method v="2">
       <option name="Make" enabled="true" />

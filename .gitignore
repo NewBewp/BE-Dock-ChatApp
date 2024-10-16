@@ -31,12 +31,12 @@ build/
 
 ### VS Code ###
 .vscode/
+.env
+
 /target/classes/
 /target/generated-sources/
 /target/generated-test-sources/
 /target/maven-archiver/
 /target/maven-status/
-/target/springboot-0.0.1-SNAPSHOT/
 /target/surefire-reports/
 /target/test-classes/
-/target/springboot-0.0.1-SNAPSHOT.war.original
