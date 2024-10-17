@@ -29,21 +29,22 @@ public class User extends TimeInfoEntityDefine implements Serializable, UserDeta
     private boolean isEmailVerified = false;
     private boolean isOnline = false;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "tbl_role_account", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "account_id"))
-
-    private Collection<Role> roles;
-
+//    @ManyToMany(fetch = FetchType.EAGER)
+//    @JoinTable(name = "tbl_role_account", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "account_id"))
+//
+//    private Collection<Role> roles;
+//
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (roles == null) {
-            return Collections.emptyList();
-        }
-        // Convert permissions to granted authority
-        // return roles.stream()
-        // .flatMap(role -> role.getPermissions().stream())
-        // .map(permission -> new SimpleGrantedAuthority(permission.getName()))
-        // .toList();
-        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).toList();
+//        if (roles == null) {
+//            return Collections.emptyList();
+//        }
+//        // Convert permissions to granted authority
+//        // return roles.stream()
+//        // .flatMap(role -> role.getPermissions().stream())
+//        // .map(permission -> new SimpleGrantedAuthority(permission.getName()))
+//        // .toList();
+//        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).toList();
+        return null;
     }
 }

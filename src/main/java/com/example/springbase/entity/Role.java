@@ -12,9 +12,9 @@ import java.util.Collection;
 public class Role extends EntityDefine {
     @Column(unique = true, nullable = false)
     private String name;
-    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private Collection<User> accounts;
+//    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+//    @JsonIgnore
+//    private Collection<User> accounts;
 
 //    @ManyToMany(fetch = FetchType.EAGER)
 //    @JoinTable(
