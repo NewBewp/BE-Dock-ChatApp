@@ -3,7 +3,7 @@ package com.example.springbase.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.springbase.dto.WorkspaceDTO;
+import com.example.springbase.dto.request.WorkspaceRequest;
 import com.example.springbase.entity.Workspace;
 import com.example.springbase.generic.GenericController;
 import com.example.springbase.generic.IService;
@@ -39,27 +39,15 @@ public class WorkspaceController extends GenericController<Workspace, String> {
     }
 
     @PostMapping()
-    public ResponseEntity<Workspace> createWorkspace(@RequestBody WorkspaceDTO dto) {
+    public ResponseEntity<Workspace> createWorkspace(@RequestBody WorkspaceRequest dto) {
         log.info("WorkspaceController: {}", dto);
         Workspace workspace = workspaceService.createWorkspace(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(workspace);
     }
 
-    // @GetMapping() // Lấy tất cả workspaces
-    // public ResponseEntity<List<WorkspaceDTO>> getAllWorkspaces() {
-    //     List<WorkspaceDTO> workspaces = workspaceService.getAllWorkspaces();
-    //     return ResponseEntity.ok(workspaces);
-    // }
-
     @PutMapping("/{id}") // Cập nhật workspace
-    public ResponseEntity<Workspace> updateWorkspace(@PathVariable String id, @RequestBody WorkspaceDTO dto) {
+    public ResponseEntity<Workspace> updateWorkspace(@PathVariable String id, @RequestBody WorkspaceRequest dto) {
         Workspace updatedWorkspace = workspaceService.updateWorkspace(id, dto);
-        return ResponseEntity.ok(updatedWorkspace);
+        return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED).body(updatedWorkspace);
     }
-
-    // @DeleteMapping("/{id}") // Xóa mềm workspace
-    // public ResponseEntity<Void> deleteWorkspace(@PathVariable String id) {
-    //     workspaceService.deleteWorkspace(id);
-    //     return ResponseEntity.noContent().build();
-    // }
 }

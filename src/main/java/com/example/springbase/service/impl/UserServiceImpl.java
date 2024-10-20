@@ -181,6 +181,9 @@ public class UserServiceImpl extends AbstractService<User, String> implements Us
         }
         // Nếu mã OTP hợp lệ cặp nhật emailVerified của người dùng
         User user = findByEmail(email);
+        if (user == null) {
+            throw new ErrorHandler(HttpStatus.NOT_FOUND,"User not found");
+        }
         user.setEmailVerified(true);
         userRepository.save(user);
 

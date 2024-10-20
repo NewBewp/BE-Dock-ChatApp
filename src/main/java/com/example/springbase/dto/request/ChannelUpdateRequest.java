@@ -1,7 +1,4 @@
-package com.example.springbase.dto;
-
-import java.nio.channels.Channel;
-import java.util.Set;
+package com.example.springbase.dto.request;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -13,7 +10,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class WorkspaceDTO { 
+public class ChannelUpdateRequest {
     String name;
-    String description;    
+    String description;
+    Boolean is_private;
 }

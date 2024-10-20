@@ -19,7 +19,7 @@ public class Channel extends EntityDefine {
 
     String description;
 
-    Boolean is_private;
+    Boolean is_private; // kenh ca nhan ?
 
     @ManyToOne
     @JoinColumn(name = "workspace_id")
