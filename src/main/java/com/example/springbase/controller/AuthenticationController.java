@@ -1,10 +1,12 @@
 package com.example.springbase.controller;
 
 import com.example.springbase.dto.TokenDTO;
+import com.example.springbase.dto.request.RefreshTokenRequest;
 import com.example.springbase.entity.User;
 import com.example.springbase.exception.ErrorHandler;
 import com.example.springbase.exception.ExceptionResponse;
 import com.example.springbase.jwt.JwtService;
+import com.example.springbase.jwt.TokenService;
 import com.example.springbase.model.RequestResponse;
 import com.example.springbase.record.EmailSignInRecord;
 import com.example.springbase.record.RegisterRecord;
@@ -28,6 +30,12 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private JwtService jwtService;
+
+    @Autowired 
+    private TokenService tokenService;
 
     @PostMapping("/sign-in")
     @PreAuthorize(AuthConstants.NONE)
@@ -102,9 +110,19 @@ public class AuthenticationController {
     public ResponseEntity<?> loginWithEmail(@RequestBody EmailSignInRecord emailLoginRecord) {
         TokenDTO dto = userService.signInWithEmail(emailLoginRecord);
         if (dto != null)
-            return ResponseEntity.status(HttpStatus.OK).body(new RequestResponse("Sign in successful", dto));
+            return ResponseEntity.status(HttpStatus.OK)
+                .body(new RequestResponse("Sign in successful", dto));
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new ExceptionResponse("Invalid OTP"));
+    }
+
+    @PostMapping("/refresh-token")
+    @PreAuthorize(AuthConstants.NONE)
+    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest request) {
+        String newToken = tokenService.refreshToken(request.getToken());
+        TokenDTO tokenDTO = new TokenDTO(newToken);
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(new RequestResponse("Token refreshed successfully", tokenDTO));
     }
 
 }

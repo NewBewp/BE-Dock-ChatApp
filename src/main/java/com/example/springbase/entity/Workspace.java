@@ -1,5 +1,6 @@
 package com.example.springbase.entity;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -22,5 +23,5 @@ public class Workspace extends EntityDefine {
     String description; // Mô tả về workspace
 
     @OneToMany(mappedBy = "workspaces", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    Set<Channel> channels;
+    Set<Channel> channels = new HashSet<>();
 }

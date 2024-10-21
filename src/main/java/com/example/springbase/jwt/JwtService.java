@@ -5,8 +5,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -23,7 +25,7 @@ public class JwtService {
     @Value("${security.jwt.expiration-time}")
     private long MINUTE_EXPIRATION;
 
-    private final long JWT_EXPIRATION = 1000 * 60 * MINUTE_EXPIRATION;
+    private final long JWT_EXPIRATION = MINUTE_EXPIRATION * 60 * 1000;
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
@@ -33,7 +35,11 @@ public class JwtService {
                 .getBody();
     }
 
-    private boolean isTokenExpired(String token) {
+    private long getExpiration() {
+        return MINUTE_EXPIRATION * 60 * 1000;
+    }
+
+    protected boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
@@ -52,7 +58,7 @@ public class JwtService {
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .setExpiration(new Date(System.currentTimeMillis() + expiration)) // Sử dụng JWT_EXPIRATION
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -71,7 +77,8 @@ public class JwtService {
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return buildToken(extraClaims, userDetails, JWT_EXPIRATION);
+        // return buildToken(extraClaims, userDetails, JWT_EXPIRATION);
+        return buildToken(extraClaims, userDetails, getExpiration());
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {

@@ -37,9 +37,8 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity
 @OpenAPIDefinition(
-//        security = @SecurityRequirement(name = "bearer-key"),
-        servers = {@Server(url = "/")}
-)
+        // security = @SecurityRequirement(name = "bearer-key"),
+        servers = { @Server(url = "/") })
 public class SercurityConfig {
     @Autowired
     private JwtFilter jwtFilter;
@@ -52,27 +51,29 @@ public class SercurityConfig {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-//                                .requestMatchers("/api/auth/logout").hasAnyAuthority("ROLE_ADMIN", "ROLE_OWNER", "ROLE_USER")
-//                                .requestMatchers("/api/auth/**").permitAll()
-//                                .requestMatchers("/api/accounts/verifyEmail").permitAll()
-//                                .requestMatchers("/api/*/*/admin/**").hasAuthority("ROLE_ADMIN")
-                                .requestMatchers("/**").permitAll()
-                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                                .requestMatchers("api/auth/sign-up", "api/auth/sign-in","api/auth/verify-email", "api/auth/forget-password",
-                                                "api/auth/sign-up-email","api/auth/sign-in-email","api/auth/request-otp").permitAll()
-                                .anyRequest().authenticated()
-                )
-                //                .exceptionHandling(e -> {
-//                    e.accessDeniedHandler(accessDeniedHandler());
-//                    e.authenticationEntryPoint(authenticationEntryPoint());
-//                } )
+                        // .requestMatchers("/api/auth/logout").hasAnyAuthority("ROLE_ADMIN",
+                        // "ROLE_OWNER", "ROLE_USER")
+                        // .requestMatchers("/api/auth/**").permitAll()
+                        // .requestMatchers("/api/accounts/verifyEmail").permitAll()
+                        // .requestMatchers("/api/*/*/admin/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/**").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("api/auth/sign-up", "api/auth/sign-in", "api/auth/verify-email",
+                                "api/auth/forget-password",
+                                "api/auth/sign-up-email", "api/auth/sign-in-email", "api/auth/request-otp",
+                                "api/auth/refresh-token").permitAll()
+                        
+                        .anyRequest().authenticated())
+                // .exceptionHandling(e -> {
+                // e.accessDeniedHandler(accessDeniedHandler());
+                // e.authenticationEntryPoint(authenticationEntryPoint());
+                // } )
                 .logout(LogoutConfigurer::permitAll)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
@@ -108,9 +109,9 @@ public class SercurityConfig {
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("http://localhost:3000");        // Chỉ định cụ thể nguồn gốc
-        config.addAllowedOrigin("http://47.129.183.26:3000");    // Chỉ định cụ thể nguồn gốc
-        config.addAllowedOrigin("https://dock.classlionvn.net/");    // Chỉ định cụ thể nguồn gốc
+        config.addAllowedOrigin("http://localhost:3000"); // Chỉ định cụ thể nguồn gốc
+        config.addAllowedOrigin("http://47.129.183.26:3000"); // Chỉ định cụ thể nguồn gốc
+        config.addAllowedOrigin("https://dock.classlionvn.net/"); // Chỉ định cụ thể nguồn gốc
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
         config.setAllowCredentials(true); // Cho phép gửi cookie cùng với request
@@ -120,7 +121,7 @@ public class SercurityConfig {
         return new CorsFilter(source);
     }
 
-    //config security swagger
+    // config security swagger
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()

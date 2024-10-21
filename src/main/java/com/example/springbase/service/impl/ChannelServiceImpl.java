@@ -38,8 +38,13 @@ public class ChannelServiceImpl extends AbstractService<Channel, String> impleme
 
     @Override
     public Channel createChannelInWorkspace(ChannelRequest request) {
+        Workspace workspace = workspaceRepository.findById(request.getWorkspace_id())
+                .orElseThrow(() -> new ErrorHandler(HttpStatus.NOT_FOUND, "Workspace not found") );
+
         Channel channel = channelMapper.toChannel(request);
-        return channelRepository.save(channel);
+        channel.setWorkspaces(workspace); // Associate the channel with the workspace
+        return channelRepository.save(channel); // Save the channel
+
     }
 
     @Override

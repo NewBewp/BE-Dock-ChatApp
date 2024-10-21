@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/channel")
+@RequestMapping("/api/channels")
 public class ChannelController extends GenericController<Channel, String> {
 
     @Autowired
@@ -32,10 +32,16 @@ public class ChannelController extends GenericController<Channel, String> {
     @Autowired 
     MessageService messageService;
 
-    @PostMapping
+    @Override
+    public IService<Channel, String> getService() {
+        return channelService;
+    }
+
+    @PostMapping("/workspace/{workspaceId}")
     @PreAuthorize(AuthConstants.NONE)
     @Transactional
-    public ResponseEntity<Channel> createChannelInWorkspace(@RequestBody ChannelRequest request) {
+    public ResponseEntity<Channel> createChannelInSpecificWorkspace(@PathVariable String workspaceId, @RequestBody ChannelRequest request) {
+        request.setWorkspace_id(workspaceId); // Set the workspace ID in the request
         Channel channel = channelService.createChannelInWorkspace(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(channel);
     }
@@ -47,9 +53,4 @@ public class ChannelController extends GenericController<Channel, String> {
     //     Channel channel = channelService.findOne(id);
     //     return
     // }
-
-    @Override
-    public IService<Channel, String> getService() {
-        return channelService;
-    }
 }

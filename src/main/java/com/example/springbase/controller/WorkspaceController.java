@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.springbase.dto.request.WorkspaceRequest;
+import com.example.springbase.dto.response.WorkspaceResponse;
 import com.example.springbase.entity.Workspace;
 import com.example.springbase.generic.GenericController;
 import com.example.springbase.generic.IService;
@@ -39,15 +40,22 @@ public class WorkspaceController extends GenericController<Workspace, String> {
     }
 
     @PostMapping()
-    public ResponseEntity<Workspace> createWorkspace(@RequestBody WorkspaceRequest dto) {
-        log.info("WorkspaceController: {}", dto);
-        Workspace workspace = workspaceService.createWorkspace(dto);
+    public ResponseEntity<WorkspaceResponse> createWorkspace(@RequestBody WorkspaceRequest request) {
+
+        WorkspaceResponse workspace = workspaceService.createWorkspace(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(workspace);
     }
 
     @PutMapping("/{id}") // Cập nhật workspace
-    public ResponseEntity<Workspace> updateWorkspace(@PathVariable String id, @RequestBody WorkspaceRequest dto) {
-        Workspace updatedWorkspace = workspaceService.updateWorkspace(id, dto);
+    public ResponseEntity<WorkspaceResponse> updateWorkspace(@PathVariable String id,
+            @RequestBody WorkspaceRequest request) {
+        WorkspaceResponse updatedWorkspace = workspaceService.updateWorkspace(id, request);
         return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED).body(updatedWorkspace);
+    }
+
+    @GetMapping("/find/{id}") // Lấy workspace theo ID
+    public ResponseEntity<WorkspaceResponse> getWorkspaceById(@PathVariable String id) {
+        WorkspaceResponse workspaceResponse = workspaceService.findWorkspaceById(id);
+        return ResponseEntity.ok(workspaceResponse); // Return the found workspace
     }
 }
