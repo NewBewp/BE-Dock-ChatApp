@@ -125,7 +125,7 @@ public class UserServiceImpl extends AbstractService<User, String> implements Us
     }
 
     @Override
-    public User findOne(String username) {
+    public User findByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(
                 () -> new ErrorHandler(HttpStatus.NOT_FOUND, "User not found"));
     }
@@ -134,7 +134,7 @@ public class UserServiceImpl extends AbstractService<User, String> implements Us
     public User getAuthenticatedAccount() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof UsernamePasswordAuthenticationToken) {
-            return findOne(authentication.getName());
+            return findByUsername(authentication.getName());
         }
         return null;
     }

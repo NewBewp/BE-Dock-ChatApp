@@ -15,7 +15,7 @@ public interface UserService extends IService<User, String>, UserDetailsService 
 
     User signUpWithEmail (String email);
 
-    User findOne(String username);
+    User findByUsername(String username);
 
     User getAuthenticatedAccount();
 

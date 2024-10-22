@@ -23,8 +23,6 @@ public class MailServiceImpl implements MailService {
     @Autowired
     private JavaMailSender javaMailSender;
 
-
-
     @Override
     public Boolean sendWithTemplate(String email, String content, EmailSubjectEnum subject, TypeMailEnum type) {
         try {

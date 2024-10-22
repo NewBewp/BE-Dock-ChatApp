@@ -23,7 +23,7 @@ public class JwtService {
     private String JWT_KEY;
 
     @Value("${security.jwt.expiration-time}")
-    private long MINUTE_EXPIRATION;
+    private long MINUTE_EXPIRATION ;
 
     private final long JWT_EXPIRATION = MINUTE_EXPIRATION * 60 * 1000;
 
