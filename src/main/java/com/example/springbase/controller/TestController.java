@@ -1,5 +1,6 @@
 package com.example.springbase.controller;
 
+import com.example.springbase.dto.request.UserUpdateRequest;
 import com.example.springbase.service.MailService;
 import com.example.springbase.util.EmailSubjectEnum;
 import com.example.springbase.util.TypeMailEnum;
@@ -11,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 @RequestMapping("/test")
@@ -35,5 +39,8 @@ public class TestController {
         }
         return "Invalid verification token";
     }
+
+
+    
 
 }

@@ -23,12 +23,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
+@Slf4j
 @RestController
 @RequestMapping("/api/workspaces")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@Slf4j
+
 public class WorkspaceController extends GenericController<Workspace, String> {
     WorkspaceService workspaceService;
 

@@ -1,6 +1,8 @@
 package com.example.springbase.service;
 
 import com.example.springbase.dto.TokenDTO;
+import com.example.springbase.dto.request.UserUpdateRequest;
+import com.example.springbase.dto.response.UserResponse;
 import com.example.springbase.entity.User;
 import com.example.springbase.generic.IService;
 import com.example.springbase.record.EmailSignInRecord;
@@ -29,5 +31,6 @@ public interface UserService extends IService<User, String>, UserDetailsService 
 
     void requestOtpForLogin (String email);
 
+    UserResponse updateUser(String id, UserUpdateRequest request);
 
 }

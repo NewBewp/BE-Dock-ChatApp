@@ -1,10 +1,13 @@
 package com.example.springbase.service.impl;
 
 import com.example.springbase.dto.TokenDTO;
+import com.example.springbase.dto.request.UserUpdateRequest;
+import com.example.springbase.dto.response.UserResponse;
 import com.example.springbase.entity.User;
 import com.example.springbase.exception.ErrorHandler;
 import com.example.springbase.generic.IRepository;
 import com.example.springbase.jwt.JwtService;
+import com.example.springbase.mapper.UserMapper;
 import com.example.springbase.record.EmailSignInRecord;
 import com.example.springbase.record.RegisterRecord;
 import com.example.springbase.record.SignInRecord;
@@ -54,6 +57,9 @@ public class UserServiceImpl extends AbstractService<User, String> implements Us
 
     @Autowired
     private JwtService jwtService;
+
+    @Autowired 
+    private UserMapper userMapper;
 
     // Chứa code otp xác thực với email
     Map<String, String> verifycationCodes = new ConcurrentHashMap<>();
@@ -245,4 +251,22 @@ public class UserServiceImpl extends AbstractService<User, String> implements Us
         mailService.sendWithTemplate(email, otp, EmailSubjectEnum.OTP, TypeMailEnum.OTP);
     }
 
+    @Override
+    public UserResponse updateUser (String id, UserUpdateRequest request){
+        User user = userRepository.findById(id).orElseThrow(
+            () -> new ErrorHandler(HttpStatus.NOT_FOUND, "User not found"));
+        user.setUsername(request.getUsername());
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setPhoneNumber(request.getPhoneNumber());
+        user.setAvatarURL(request.getAvatarURL());
+
+        userRepository.save(user);
+        return userMapper.torResponse(user);        
+    }
+
+
+
 }
+
+    
