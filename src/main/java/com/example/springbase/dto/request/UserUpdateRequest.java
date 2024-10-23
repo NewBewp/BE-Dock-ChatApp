@@ -13,8 +13,6 @@ import lombok.experimental.FieldDefaults;
 //@NoArgsConstructor
 //@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserUpdateRequest {
-    private String username;
-    @JsonProperty("phoneNumber")
     private String phoneNumber;
     private String lastName;
     private String firstName;

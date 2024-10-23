@@ -255,11 +255,18 @@ public class UserServiceImpl extends AbstractService<User, String> implements Us
     public UserResponse updateUser (String id, UserUpdateRequest request){
         User user = userRepository.findById(id).orElseThrow(
             () -> new ErrorHandler(HttpStatus.NOT_FOUND, "User not found"));
-        user.setUsername(request.getUsername());
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setPhoneNumber(request.getPhoneNumber());
-        user.setAvatarURL(request.getAvatarURL());
+            if (request.getFirstName() != null) {
+                user.setFirstName(request.getFirstName());
+            }
+            if (request.getLastName() != null) {
+                user.setLastName(request.getLastName());
+            }
+            if (request.getPhoneNumber() != null) {
+                user.setPhoneNumber(request.getPhoneNumber());
+            }
+            if (request.getAvatarURL() != null) {
+                user.setAvatarURL(request.getAvatarURL());
+            }
 
         userRepository.save(user);
         return userMapper.torResponse(user);        

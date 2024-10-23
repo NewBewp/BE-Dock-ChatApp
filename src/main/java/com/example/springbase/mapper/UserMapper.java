@@ -15,7 +15,6 @@ public class UserMapper {
 
     public User toUser (UserUpdateRequest request){
         User user = new User();
-        user.setUsername(request.getUsername());
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setPhoneNumber(request.getPhoneNumber());
