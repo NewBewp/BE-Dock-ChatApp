@@ -21,51 +21,11 @@ import lombok.extern.slf4j.Slf4j;
 public class MessageServiceImpl extends AbstractService<Message, String> implements MessageService {
 
     @Autowired
-    private MessageRepository messageRepo;
-
-    @Autowired 
-    private UserRepository userRepository;
-
-    @Autowired
-    private ChannelRepository channelRepository;
-
-
-
-    @Override
-    public Message createMessage(MessageRecord record) {
-
-        Message message = new Message();
-        message.setContent(record.content());
-        message.setMessageType(record.messageType());
-        // message.setGroup(record.isGroup());
-        message.setGroup(false);
-        message.setIsDeleted(false);
-
-        // Fetch and set the sender, receiver, and channel
-        // User sender = userRepository.findById(record.sender())
-        //         .orElseThrow(() -> new IllegalArgumentException("Invalid sender ID"));
-        // message.setSender(sender);
-    
-        // User receiver = userRepository.findById(record.receiver())
-        //         .orElseThrow(() -> new IllegalArgumentException("Invalid receiver ID"));
-        // message.setReceiver(receiver);
-    
-        // Channel channel = channelRepository.findById(record.channel())
-        //         .orElseThrow(() -> new IllegalArgumentException("Invalid channel ID"));
-        // message.setChannel(channel);
-    
-        // Save the message using the repository
-        return messageRepo.save(message);
-
-    }
+    private MessageRepository messageRepository;
 
     @Override
     protected IRepository<Message, String> getRepository() {
-        return messageRepo; // Trả về repository
+        return messageRepository; // Trả về repository
     }
-
-
-
-
 
 }
