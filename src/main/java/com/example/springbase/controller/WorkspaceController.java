@@ -36,14 +36,14 @@ public class WorkspaceController extends GenericController<Workspace, String> {
     public ResponseEntity<?> createWorkspace(@RequestBody WorkspaceRequest request) {
 
         WorkspaceResponse workspace = workspaceService.createWorkspace(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new RequestResponse("Create Workspace successfull", workspace));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new RequestResponse("Create Workspace successful", workspace));
     }
 
     @PutMapping("/{id}") // Cập nhật workspace
     public ResponseEntity<?> updateWorkspace(@PathVariable String id,
             @RequestBody WorkspaceRequest request) {
         WorkspaceResponse updatedWorkspace = workspaceService.updateWorkspace(id, request);
-        return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED).body(updatedWorkspace);
+        return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED).body(new RequestResponse("Update Workspace successful", updatedWorkspace));
     }
 
     @GetMapping("/find/{id}") // Lấy workspace theo ID
@@ -56,9 +56,9 @@ public class WorkspaceController extends GenericController<Workspace, String> {
         }
     }
 
-    @GetMapping("/entity/{id}")
-    public ResponseEntity<?> findWorkspaceEntityById (@PathVariable String id){
-        WorkspaceDetailResponse workspaceDetail = workspaceService.findWorkspaceEntityById(id);
-        return ResponseEntity.ok(workspaceDetail);
-    }
+    // @GetMapping("/entity/{id}")
+    // public ResponseEntity<?> findWorkspaceEntityById (@PathVariable String id){
+    //     WorkspaceDetailResponse workspaceDetail = workspaceService.findWorkspaceEntityById(id);
+    //     return ResponseEntity.ok(workspaceDetail);
+    // }
 }
