@@ -16,4 +16,5 @@ import lombok.experimental.FieldDefaults;
 public class WorkspaceRequest { 
     String name;
     String description;    
+    String avatarURL;
 }

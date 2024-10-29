@@ -1,9 +1,12 @@
 package com.example.springbase.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.example.springbase.dto.request.ChannelCreateRequest;
 import com.example.springbase.dto.request.ChannelRequest;
 import com.example.springbase.dto.response.ChannelResponse;
 import com.example.springbase.entity.Channel;
@@ -31,20 +34,23 @@ public class ChannelServiceImpl extends AbstractService<Channel, String> impleme
     @Autowired
     WorkspaceRepository workspaceRepository;
 
+
+
     @Override
     protected IRepository<Channel, String> getRepository() {
         return channelRepository;
     }
 
     @Override
-    public Channel createChannelInWorkspace(ChannelRequest request) {
-        Workspace workspace = workspaceRepository.findById(request.getWorkspace_id())
-                .orElseThrow(() -> new ErrorHandler(HttpStatus.NOT_FOUND, "Workspace not found") );
+    public Channel createChannelInWorkspace(String workspaceId, ChannelCreateRequest request) {
+        Workspace workspace = workspaceRepository.findById(workspaceId)
+                .orElseThrow(() -> new ErrorHandler(HttpStatus.NOT_FOUND, "Workspace not found"));
 
         Channel channel = channelMapper.toChannel(request);
-        channel.setWorkspaces(workspace); // Associate the channel with the workspace
-        return channelRepository.save(channel); // Save the channel
-
+        channel.setWorkspace(workspace);
+        Channel savedChannel = channelRepository.save(channel);
+        // log.info("Saved Channel >>> {}", savedChannel) ;
+        return savedChannel;
     }
 
     @Override

@@ -1,19 +1,17 @@
 package com.example.springbase.controller;
 
-import com.example.springbase.dto.request.ChannelUpdateRequest;
+import com.example.springbase.dto.request.ChannelCreateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.springbase.dto.request.ChannelRequest;
+import com.example.springbase.dto.response.ChannelResponse;
 import com.example.springbase.entity.Channel;
-import com.example.springbase.entity.Message;
 import com.example.springbase.generic.GenericController;
 import com.example.springbase.generic.IService;
-import com.example.springbase.record.MessageRecord;
 import com.example.springbase.service.ChannelService;
 import com.example.springbase.service.MessageService;
 import com.example.springbase.util.AuthConstants;
@@ -29,7 +27,7 @@ public class ChannelController extends GenericController<Channel, String> {
     @Autowired
     ChannelService channelService;
 
-    @Autowired 
+    @Autowired
     MessageService messageService;
 
     @Override
@@ -37,20 +35,14 @@ public class ChannelController extends GenericController<Channel, String> {
         return channelService;
     }
 
-    @PostMapping("/workspace/{workspaceId}")
-    @PreAuthorize(AuthConstants.NONE)
-    @Transactional
-    public ResponseEntity<Channel> createChannelInSpecificWorkspace(@PathVariable String workspaceId, @RequestBody ChannelRequest request) {
-        request.setWorkspace_id(workspaceId); // Set the workspace ID in the request
-        Channel channel = channelService.createChannelInWorkspace(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(channel);
+    @PostMapping("/workspace/{workspaceId}") // Endpoint để tạo channel cho workspace
+    public ResponseEntity<ChannelResponse> createChannelInSpecificWorkspace(@PathVariable String workspaceId, @RequestBody ChannelCreateRequest request) {
+        Channel channel = channelService.createChannelInWorkspace(workspaceId, request); // Tạo channel
+        ChannelResponse channelResponse = new ChannelResponse(
+                channel.getName(),
+                channel.getDescription(),
+                channel.getIs_private(),
+                workspaceId); // Tạo response cho channel
+        return ResponseEntity.status(HttpStatus.CREATED).body(channelResponse); // Trả về response
     }
-
-    // @PutMapping
-    // @PreAuthorize(AuthConstants.NONE)
-    // @Transactional
-    // public ResponseEntity<Channel> updateChannelInWorkspace(@PathVariable String id,@RequestBody ChannelUpdateRequest request) {
-    //     Channel channel = channelService.findOne(id);
-    //     return
-    // }
 }

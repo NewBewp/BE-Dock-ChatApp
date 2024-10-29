@@ -11,6 +11,9 @@ import com.example.springbase.generic.IService;
 import com.example.springbase.service.MessageService;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @Slf4j
 @RestController
@@ -23,4 +26,7 @@ public class MessagesController extends GenericController<Message, String> {
     public IService<Message, String> getService() {
         return messageService;
     }
+
+    
+    
 }

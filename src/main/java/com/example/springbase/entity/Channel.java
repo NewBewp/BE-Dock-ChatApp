@@ -1,10 +1,6 @@
 package com.example.springbase.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
@@ -23,5 +19,5 @@ public class Channel extends EntityDefine {
 
     @ManyToOne
     @JoinColumn(name = "workspace_id")
-    Workspace workspaces;
+    Workspace workspace;
 }

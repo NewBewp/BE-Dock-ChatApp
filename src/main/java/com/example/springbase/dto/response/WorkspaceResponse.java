@@ -1,5 +1,6 @@
 package com.example.springbase.dto.response;
 
+import java.util.List;
 import java.util.Set;
 
 import lombok.AccessLevel;
@@ -16,6 +17,7 @@ public class WorkspaceResponse {
     String id;
     String name;
     String description;
+    String avatarURL;
     Boolean isDeleted;
-    Set<ChannelResponse> channels;
+    List<ChannelResponse> channels;
 }

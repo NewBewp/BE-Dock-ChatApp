@@ -8,5 +8,5 @@ import com.example.springbase.generic.IRepository;
 
 @Repository
 public interface ChannelRepository extends IRepository<Channel, String> {
-
+    
 }

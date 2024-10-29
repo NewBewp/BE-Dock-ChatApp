@@ -1,6 +1,8 @@
 package com.example.springbase.entity;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -19,9 +21,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Workspace extends EntityDefine {
     @Column(nullable = false, unique = true)
-    String name; // Tên của workspace
-    String description; // Mô tả về workspace
-
-    @OneToMany(mappedBy = "workspaces", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    Set<Channel> channels = new HashSet<>();
+    String name;
+    String description;
+    String avatarURL;
+    @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    List<Channel> channels;
 }

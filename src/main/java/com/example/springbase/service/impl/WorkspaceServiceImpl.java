@@ -1,37 +1,41 @@
 package com.example.springbase.service.impl;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-
-import com.example.springbase.dto.request.ChannelRequest;
+import com.example.springbase.dto.request.ChannelCreateRequest;
 import com.example.springbase.dto.request.WorkspaceRequest;
+import com.example.springbase.dto.response.ChannelDetailResponse;
+import com.example.springbase.dto.response.WorkspaceDetailResponse;
 import com.example.springbase.dto.response.WorkspaceResponse;
 import com.example.springbase.entity.Channel;
 import com.example.springbase.entity.Workspace;
 import com.example.springbase.exception.ErrorHandler;
 import com.example.springbase.generic.IRepository;
 import com.example.springbase.mapper.WorkspaceMapper;
-import com.example.springbase.repository.ChannelRepository;
 import com.example.springbase.repository.WorkspaceRepository;
 import com.example.springbase.service.AbstractService;
 import com.example.springbase.service.ChannelService;
 import com.example.springbase.service.WorkspaceService;
-
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+// @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class WorkspaceServiceImpl extends AbstractService<Workspace, String> implements WorkspaceService {
-
+    @Autowired
     WorkspaceRepository workspaceRepository;
+
+    @Autowired
     WorkspaceMapper workspaceMapper;
+
+    @Autowired
     ChannelService channelService;
 
     @Override
@@ -41,21 +45,19 @@ public class WorkspaceServiceImpl extends AbstractService<Workspace, String> imp
 
     @Override // Tạo workspace
     public WorkspaceResponse createWorkspace(WorkspaceRequest request) {
+        
         Workspace workspace = workspaceMapper.toWorkspace(request);
+        workspace.setChannels(new ArrayList<>());
         Workspace savedWorkspace = save(workspace); // Save the workspace first
-
-        // Create a channel for the newly created workspace
-        ChannelRequest channelRequest = new ChannelRequest();
-        channelRequest.setName("general"); // Set the default name for the channel
-        channelRequest.setDescription("description general"); // Set the default description for the channel
+        // Tạo channel mặc định cho workspace
+        ChannelCreateRequest channelRequest = new ChannelCreateRequest();
+        channelRequest.setName("General"); // Tên channel mặc định
+        channelRequest.setDescription("Default channel for the workspace"); // Mô tả channel
         channelRequest.setIs_private(false);
-        channelRequest.setWorkspace_id(savedWorkspace.getId()); // Set the workspace ID
 
-        // Create the channel using the ChannelService
-        Channel createdChannel = channelService.createChannelInWorkspace(channelRequest); // Create the channel
-
+        Channel channel = channelService.createChannelInWorkspace(savedWorkspace.getId(), channelRequest);
         // Add the created channel to the workspace's channels set
-        savedWorkspace.getChannels().add(createdChannel); // Maintain the relationship
+        savedWorkspace.getChannels().add(channel); // Maintain the relationship
 
         return workspaceMapper.toResponse(savedWorkspace); // Return the saved workspace
 
@@ -83,13 +85,36 @@ public class WorkspaceServiceImpl extends AbstractService<Workspace, String> imp
     public Boolean deleteWorkspace(String id) {
         return delete(id); // Sử dụng phương thức delete từ AbstractService
     }
-    
+
     @Override // Tìm workspace theo ID
     public WorkspaceResponse findWorkspaceById(String id) {
-        Workspace workspace = findOne(id); // Use the inherited method to find the workspace
+        Workspace workspace = findOne(id);
+
         if (workspace == null) {
             throw new ErrorHandler(HttpStatus.NOT_FOUND, "Workspace not found");
+        } else {
+            return workspaceMapper.toResponse(workspace);
         }
-        return workspaceMapper.toResponse(workspace); // Convert to WorkspaceResponse
+    }
+
+    @Override
+    public WorkspaceDetailResponse findWorkspaceEntityById(String id) {
+        Workspace workspace = findOne(id);
+        List<ChannelDetailResponse> channelResponses = workspace.getChannels().stream()
+                .map(channel -> new ChannelDetailResponse(
+                        channel.getId(),
+                        channel.getName(),
+                        channel.getDescription(),
+                        channel.getIs_private(),
+                        channel.getIsDeleted(),
+                        workspace.getId() // ID của workspace
+                ))
+                .collect(Collectors.toList());
+        return new WorkspaceDetailResponse(
+                workspace.getId(),
+                workspace.getName(),
+                workspace.getDescription(),
+                workspace.getIsDeleted(),
+                channelResponses);
     }
 }

@@ -1,5 +1,6 @@
 package com.example.springbase.mapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -17,7 +18,8 @@ public class WorkspaceMapper {
         Workspace workspace = new Workspace();  
         workspace.setName(request.getName());
         workspace.setDescription(request.getDescription());
-        workspace.setIsDeleted(false);
+        workspace.setAvatarURL(request.getAvatarURL());
+        workspace.setIsDeleted(false);        
         return workspace;
     }
 
@@ -28,20 +30,21 @@ public class WorkspaceMapper {
         return dto;
     }
 
-    public WorkspaceResponse toResponse (Workspace entity){
-        Set<ChannelResponse> channelResponses = entity.getChannels().stream()
+    public WorkspaceResponse toResponse(Workspace workspace) {
+        List<ChannelResponse> channelResponses = workspace.getChannels().stream()
             .map(channel -> new ChannelResponse(
                 channel.getName(),
                 channel.getDescription(),
                 channel.getIs_private(),
-                entity.getId()))
-            .collect(Collectors.toSet());
-
+                workspace.getId()))
+            .collect(Collectors.toList());       
+    
         return new WorkspaceResponse(
-            entity.getId(),
-            entity.getName(),
-            entity.getDescription(),
-            entity.getIsDeleted(),
+            workspace.getId(),
+            workspace.getName(),
+            workspace.getDescription(),
+            workspace.getAvatarURL(),
+            workspace.getIsDeleted(),            
             channelResponses
         );
     }

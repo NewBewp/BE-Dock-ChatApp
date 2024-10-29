@@ -3,6 +3,7 @@ package com.example.springbase.service;
 import java.util.List;
 
 import com.example.springbase.dto.request.WorkspaceRequest;
+import com.example.springbase.dto.response.WorkspaceDetailResponse;
 import com.example.springbase.dto.response.WorkspaceResponse;
 import com.example.springbase.entity.Workspace;
 import com.example.springbase.generic.IService;
@@ -13,5 +14,5 @@ public interface WorkspaceService extends IService<Workspace, String> {
     WorkspaceResponse updateWorkspace(String id, WorkspaceRequest request);
     Boolean deleteWorkspace(String id);
     WorkspaceResponse findWorkspaceById(String id);
-
+    WorkspaceDetailResponse findWorkspaceEntityById(String id);
 } 
