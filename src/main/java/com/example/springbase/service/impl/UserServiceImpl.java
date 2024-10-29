@@ -85,8 +85,6 @@ public class UserServiceImpl extends AbstractService<User, String> implements Us
         User user = userRepository.findByUsername(record.username()).orElseThrow(
                 () -> new ErrorHandler(HttpStatus.UNAUTHORIZED, "Invalid username or password"));
 
-        log.info("isEmailVerified:  {}", user.isEmailVerified());
-
         if (!user.isEmailVerified()) {
             throw new ErrorHandler(HttpStatus.UNAUTHORIZED,
                     "Email not verified. Please verify your email before signing in.");
@@ -102,7 +100,7 @@ public class UserServiceImpl extends AbstractService<User, String> implements Us
 
         // missing refresh token
         if (accessToken != null) {
-            return new TokenDTO(accessToken);
+            return new TokenDTO(accessToken, user.getId());
         }
         return null;
     }
@@ -234,7 +232,7 @@ public class UserServiceImpl extends AbstractService<User, String> implements Us
         // Xóa mã OTP sau khi xác thực thành công
         clearVerificationCode(record.email());
 
-        return new TokenDTO(accessToken);
+        return new TokenDTO(accessToken, user.getId());
     }
 
     @Override

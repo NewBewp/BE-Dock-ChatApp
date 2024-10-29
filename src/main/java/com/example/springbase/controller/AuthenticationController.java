@@ -120,9 +120,9 @@ public class AuthenticationController {
     @PreAuthorize(AuthConstants.NONE)
     public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest request) {
         String newToken = tokenService.refreshToken(request.getToken());
-        TokenDTO tokenDTO = new TokenDTO(newToken);
+        String userId = "";
+        TokenDTO tokenDTO = new TokenDTO(newToken,userId);
         return ResponseEntity.status(HttpStatus.OK)
             .body(new RequestResponse("Token refreshed successfully", tokenDTO));
     }
-
 }

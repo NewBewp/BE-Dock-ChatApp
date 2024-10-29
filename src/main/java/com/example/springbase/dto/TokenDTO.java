@@ -9,4 +9,5 @@ import lombok.Data;
 public class TokenDTO {
     @JsonProperty(value = "access-token")
     private String accessToken;
+    private String userId;
 }
