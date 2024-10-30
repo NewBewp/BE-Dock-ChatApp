@@ -21,7 +21,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,10 +66,10 @@ public class WorkspaceServiceImpl extends AbstractService<Workspace, String> imp
     }
 
     @Override // Lấy tất cả workspaces
-    public List<WorkspaceResponse> getAllWorkspaces() {
+    public Set<WorkspaceResponse> getAllWorkspaces() {
         return workspaceRepository.findAll().stream()
                 .map(workspaceMapper::toResponse) // Chuyển đổi Workspace thành WorkspaceDTO
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     @Override // Cập nhật workspace

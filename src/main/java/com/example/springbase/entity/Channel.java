@@ -1,5 +1,7 @@
 package com.example.springbase.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -19,5 +21,6 @@ public class Channel extends EntityDefine {
 
     @ManyToOne
     @JoinColumn(name = "workspace_id")
+    @JsonIgnore
     Workspace workspace;
 }
