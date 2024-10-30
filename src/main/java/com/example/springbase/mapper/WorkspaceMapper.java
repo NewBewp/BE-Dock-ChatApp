@@ -33,6 +33,7 @@ public class WorkspaceMapper {
     public WorkspaceResponse toResponse(Workspace workspace) {
         List<ChannelResponse> channelResponses = workspace.getChannels().stream()
             .map(channel -> new ChannelResponse(
+                channel.getId(),
                 channel.getName(),
                 channel.getDescription(),
                 channel.getIs_private(),

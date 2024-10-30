@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.example.springbase.dto.request.ChannelCreateRequest;
 import com.example.springbase.dto.request.ChannelRequest;
 import com.example.springbase.dto.response.ChannelResponse;
+import com.example.springbase.dto.response.WorkspaceResponse;
 import com.example.springbase.entity.Channel;
 import com.example.springbase.entity.Workspace;
 import com.example.springbase.exception.ErrorHandler;
@@ -34,8 +35,6 @@ public class ChannelServiceImpl extends AbstractService<Channel, String> impleme
     @Autowired
     WorkspaceRepository workspaceRepository;
 
-
-
     @Override
     protected IRepository<Channel, String> getRepository() {
         return channelRepository;
@@ -45,7 +44,6 @@ public class ChannelServiceImpl extends AbstractService<Channel, String> impleme
     public Channel createChannelInWorkspace(String workspaceId, ChannelCreateRequest request) {
         Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new ErrorHandler(HttpStatus.NOT_FOUND, "Workspace not found"));
-
         Channel channel = channelMapper.toChannel(request);
         channel.setWorkspace(workspace);
         Channel savedChannel = channelRepository.save(channel);
@@ -53,22 +51,13 @@ public class ChannelServiceImpl extends AbstractService<Channel, String> impleme
         return savedChannel;
     }
 
-    @Override
-    public ChannelResponse getChannelById(String id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getChannelById'");
+    @Override 
+    public ChannelResponse getDetailChannelInWorkspace (String workspaceId, String channelId){
+        Workspace workspace = workspaceRepository.findById(workspaceId)
+            .orElseThrow(()-> new ErrorHandler(HttpStatus.NOT_FOUND, "Workspace not found"));
+        Channel channel = channelRepository.findById(channelId)
+            .filter(c -> c.getWorkspace().equals(workspace))
+            .orElseThrow(()-> new ErrorHandler(HttpStatus.NOT_FOUND, "Channel not found in this workspace"));
+        return channelMapper.toChannelResponse(channel);
     }
-
-    @Override
-    public Channel updatChannel(String id, ChannelRequest request) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updatChannel'");
-    }
-
-    @Override
-    public Boolean deleteChannel(String id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteChannel'");
-    }
-
 }

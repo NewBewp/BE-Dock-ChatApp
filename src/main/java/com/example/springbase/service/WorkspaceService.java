@@ -11,7 +11,7 @@ import com.example.springbase.generic.IService;
 
 public interface WorkspaceService extends IService<Workspace, String> {
     WorkspaceResponse createWorkspace (WorkspaceRequest request);
-    Set<WorkspaceResponse> getAllWorkspaces(); // Thêm phương thức lấy tất cả workspaces
+    Set<WorkspaceResponse> getAllWorkspaces(); 
     WorkspaceResponse updateWorkspace(String id, WorkspaceRequest request);
     Boolean deleteWorkspace(String id);
     WorkspaceResponse findWorkspaceById(String id);

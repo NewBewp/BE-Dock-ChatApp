@@ -11,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ChannelResponse {
+    String id;
     String name;
     String description;
     Boolean isPrivate;
