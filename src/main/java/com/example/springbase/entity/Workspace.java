@@ -1,14 +1,13 @@
 package com.example.springbase.entity;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -26,4 +25,8 @@ public class Workspace extends EntityDefine {
     String avatarURL;
     @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     List<Channel> channels;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    User user;
 }

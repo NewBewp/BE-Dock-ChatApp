@@ -6,10 +6,12 @@ import com.example.springbase.dto.response.ChannelDetailResponse;
 import com.example.springbase.dto.response.WorkspaceDetailResponse;
 import com.example.springbase.dto.response.WorkspaceResponse;
 import com.example.springbase.entity.Channel;
+import com.example.springbase.entity.User;
 import com.example.springbase.entity.Workspace;
 import com.example.springbase.exception.ErrorHandler;
 import com.example.springbase.generic.IRepository;
 import com.example.springbase.mapper.WorkspaceMapper;
+import com.example.springbase.repository.UserRepository;
 import com.example.springbase.repository.WorkspaceRepository;
 import com.example.springbase.service.AbstractService;
 import com.example.springbase.service.ChannelService;
@@ -21,7 +23,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,6 +36,9 @@ public class WorkspaceServiceImpl extends AbstractService<Workspace, String> imp
     WorkspaceRepository workspaceRepository;
 
     @Autowired
+    UserRepository userRepository;
+
+    @Autowired
     WorkspaceMapper workspaceMapper;
 
     @Autowired
@@ -45,25 +49,29 @@ public class WorkspaceServiceImpl extends AbstractService<Workspace, String> imp
         return workspaceRepository;
     }
 
-    @Override // Tạo workspace
-    public WorkspaceResponse createWorkspace(WorkspaceRequest request) {
-        
-        Workspace workspace = workspaceMapper.toWorkspace(request);
-        workspace.setChannels(new ArrayList<>());
-        Workspace savedWorkspace = save(workspace); // Save the workspace first
-        // Tạo channel mặc định cho workspace
-        ChannelCreateRequest channelRequest = new ChannelCreateRequest();
-        channelRequest.setName("General"); // Tên channel mặc định
-        channelRequest.setDescription("Default channel for the workspace"); // Mô tả channel
-        channelRequest.setIs_private(false);
+    // @Override // Tạo workspace
+    // public WorkspaceResponse createWorkspace(WorkspaceRequest request) {
 
-        Channel channel = channelService.createChannelInWorkspace(savedWorkspace.getId(), channelRequest);
-        // Add the created channel to the workspace's channels set
-        savedWorkspace.getChannels().add(channel); // Maintain the relationship
+    // Workspace workspace = workspaceMapper.toWorkspace(request);
+    // workspace.setChannels(new ArrayList<>());
+    // Workspace savedWorkspace = save(workspace); // Save the workspace first
+    // // Tạo channel mặc định cho workspace
+    // ChannelCreateRequest channelRequest = new ChannelCreateRequest();
+    // channelRequest.setName("General"); // Tên channel mặc định
+    // channelRequest.setDescription("Default channel for the workspace"); // Mô tả
+    // channel
+    // channelRequest.setIs_private(false);
 
-        return workspaceMapper.toResponse(savedWorkspace); // Return the saved workspace
+    // Channel channel =
+    // channelService.createChannelInWorkspace(savedWorkspace.getId(),
+    // channelRequest);
+    // // Add the created channel to the workspace's channels set
+    // savedWorkspace.getChannels().add(channel); // Maintain the relationship
 
-    }
+    // return workspaceMapper.toResponse(savedWorkspace); // Return the saved
+    // workspace
+
+    // }
 
     @Override // Lấy tất cả workspaces
     public Set<WorkspaceResponse> getAllWorkspaces() {
@@ -119,4 +127,35 @@ public class WorkspaceServiceImpl extends AbstractService<Workspace, String> imp
                 workspace.getIsDeleted(),
                 channelResponses);
     }
+
+    @Override
+    public WorkspaceResponse createWorkspaceByUser(String userId, WorkspaceRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ErrorHandler(HttpStatus.NOT_FOUND, "User not found"));
+        Workspace workspace = workspaceMapper.toWorkspace(request);
+        workspace.setUser(user);
+        workspace.setChannels(new ArrayList<>());
+        Workspace savedWorkspace = save(workspace); // Save the workspace first
+        // Tạo channel mặc định cho workspace
+        ChannelCreateRequest channelRequest = new ChannelCreateRequest();
+        channelRequest.setName("General"); // Tên channel mặc định
+        channelRequest.setDescription("Default channel for the workspace"); // Mô tả channel
+        channelRequest.setIs_private(false);
+
+        Channel channel = channelService.createChannelInWorkspace(savedWorkspace.getId(), channelRequest);
+        // Add the created channel to the workspace's channels set
+        savedWorkspace.getChannels().add(channel); // Maintain the relationship
+
+        return workspaceMapper.toResponse(savedWorkspace);
+    }
+
+    @Override
+    public Set<WorkspaceResponse> findWorkspaceByUserId(String userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ErrorHandler(HttpStatus.NOT_FOUND, "User not found"));
+        return user.getWorkspaces().stream()
+            .map(workspaceMapper::toResponse)
+            .collect(Collectors.toSet());
+    }
+
 }

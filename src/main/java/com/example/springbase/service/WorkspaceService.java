@@ -10,10 +10,12 @@ import com.example.springbase.entity.Workspace;
 import com.example.springbase.generic.IService;
 
 public interface WorkspaceService extends IService<Workspace, String> {
-    WorkspaceResponse createWorkspace (WorkspaceRequest request);
+    // WorkspaceResponse createWorkspace (WorkspaceRequest request);
     Set<WorkspaceResponse> getAllWorkspaces(); 
     WorkspaceResponse updateWorkspace(String id, WorkspaceRequest request);
     Boolean deleteWorkspace(String id);
     WorkspaceResponse findWorkspaceById(String id);
     WorkspaceDetailResponse findWorkspaceEntityById(String id);
+    WorkspaceResponse createWorkspaceByUser(String userId, WorkspaceRequest request);
+    Set<WorkspaceResponse> findWorkspaceByUserId(String userId);
 } 
