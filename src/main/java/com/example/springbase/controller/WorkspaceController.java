@@ -47,7 +47,7 @@ public class WorkspaceController extends GenericController<Workspace, String> {
     public ResponseEntity<?> updateWorkspace(@PathVariable String id,
             @RequestBody WorkspaceRequest request) {
         WorkspaceResponse updatedWorkspace = workspaceService.updateWorkspace(id, request);
-        return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED)
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(new RequestResponse("Update Workspace successful", updatedWorkspace));
     }
 

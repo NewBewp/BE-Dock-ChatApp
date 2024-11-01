@@ -39,52 +39,57 @@ public class MessageServiceImpl extends AbstractService<Message, String> impleme
     }
 
     @Override
-    public MessageResponse sendMessage(MessageRequest request, String senderEmail, String receiverEmail, String channelId) {
-//        User sender = userRepository.findByEmail(senderEmail)
-//                .orElseThrow(() -> new ErrorHandler(HttpStatus.NOT_FOUND, "User not found"));
-//        if (request.isReply() == false) {
-//            if (request.isPrivate() == false) {
-//                Channel channel = channelRepository.findById(channelId)
-//                        .orElseThrow(() -> new ErrorHandler(HttpStatus.NOT_FOUND, "Channel not found"));
-//                Message message = new Message();
-//                message.setContent(request.getContent());
-//                message.setMessageType(request.getMessageType());
-//                message.setSender(sender);
-//                message.setReceiver(null);
-//                message.setChannel(channel);
-//                if (request.getMessageType() == MessageType.FILE) {
-//                    message.setFileUrl(request.getFileUrl());
-//                }else {
-//                    message.setFileUrl(null);
-//                }
-//                message.setPrivate(false);
-//                message.setReply(false);
-//                message.setReplyId(null);
-//                message.setIsDeleted(false);
-//                messageRepository.save(message);
-//            }else {
-//                User receiver = userRepository.findByEmail(receiverEmail)
-//                        .orElseThrow(() -> new ErrorHandler(HttpStatus.NOT_FOUND, "User not found"));
-//                Message message = new Message();
-//                message.setContent(request.getContent());
-//                message.setMessageType(request.getMessageType());
-//                message.setSender(sender);
-//                message.setReceiver(receiver);
-//                message.setChannel(null);
-//                if (request.getMessageType() == MessageType.FILE) {
-//                    message.setFileUrl(request.getFileUrl());
-//                }else {
-//                    message.setFileUrl(null);
-//                }
-//                message.setPrivate(true);
-//                message.setReply(false);
-//                message.setReplyId(null);
-//                message.setIsDeleted(false);
-//                messageRepository.save(message);
-//            }
-//            return m
-//        }else
-            return null;
+    public MessageResponse sendMessage(MessageRequest request) {
+        User sender = userRepository.findByEmail(request.getSenderEmail())
+                .orElseThrow(() -> new ErrorHandler(HttpStatus.NOT_FOUND, "User not found"));
+        Message message = new Message();
+        message.setContent(request.getContent());
+        message.setMessageType(request.getMessageType());
+        message.setSender(sender);
+        message.setIsDeleted(false);
+        if (request.isReply() == false) { // Tin nhắn không phải trả lời
+            if (request.isPrivate() == false) {
+                Channel channel = channelRepository.findById(request.getChannelId())
+                        .orElseThrow(() -> new ErrorHandler(HttpStatus.NOT_FOUND, "Channel not found"));
+                message.setChannel(channel);
+                message.setReceiver(null);
+            } else {
+                User receiver = userRepository.findByEmail(request.getReceiverEmail())
+                        .orElseThrow(() -> new ErrorHandler(HttpStatus.NOT_FOUND, "User not found"));
+                message.setReceiver(receiver);
+                message.setChannel(null);
+            }
+
+            if (request.getMessageType() == MessageType.FILE) {
+                message.setFileUrl(request.getFileUrl());
+            } else {
+                message.setFileUrl(null);
+            }
+
+            message.setPrivate(request.isPrivate());
+            message.setReply(false);
+            message.setReplyId(null);
+            messageRepository.save(message);
+        } else {
+            // Logic xử lý cho tin nhắn trả lời
+            Message originalMessage = messageRepository.findById(request.getReplyId())
+                    .orElseThrow(() -> new ErrorHandler(HttpStatus.NOT_FOUND, "Original message not found"));
+
+            message.setReply(true);
+            message.setReplyId(originalMessage.getId());
+            message.setChannel(originalMessage.getChannel());
+            message.setReceiver(originalMessage.getSender());
+            message.setPrivate(originalMessage.isPrivate());
+
+            if (request.getMessageType() == MessageType.FILE) {
+                message.setFileUrl(request.getFileUrl());
+            } else {
+                message.setFileUrl(null);
+            }
+
+            messageRepository.save(message);
+        }
+        return messageMapper.toResponse(message);
     }
 
 
@@ -93,4 +98,4 @@ public class MessageServiceImpl extends AbstractService<Message, String> impleme
         return null;
     }
 
-}
+} 

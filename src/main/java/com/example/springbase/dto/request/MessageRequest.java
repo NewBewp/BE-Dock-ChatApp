@@ -20,7 +20,6 @@ public class MessageRequest {
     String receiverEmail;
     String channelId;
     String fileUrl;
-    boolean isGroup;
     boolean isPrivate;
     boolean isReply;
     String replyId;
