@@ -7,44 +7,44 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 
 import java.util.Set;
 
 @Entity
 @Table(name = "tbl_message")
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Message extends EntityDefine {
     @Column(nullable = false)
-    private String content;
+    String content;
 
     @Column(nullable = false)
-    private MessageType messageType;
+    MessageType messageType;
 
     @ManyToOne
     @JoinColumn(name = "sender_email", nullable = false)
-    private User sender;
+    User sender;
 
     @ManyToOne
     @JoinColumn(name = "receiver_email")
-    private User receiver;
+    User receiver;
 
     @ManyToOne
     @JoinColumn(name = "channel_id")
-    private Channel channel; // Channel for group messages
+    Channel channel; // Channel for group messages
 
     @Column(nullable = true)
-    private String fileUrl; // URL for the file or image sent
+    String fileUrl; // URL for the file or image sent
 
     @Column(nullable = false)
-    private boolean isGroup; // Thêm trường để xác định tin nhắn nhóm
+    boolean isPrivate;
 
     @Column(nullable = false)
-    private boolean isPrivate;
-
-    @Column(nullable =  false)
-    private boolean isReply;
+    boolean isReply;
 
     @Column(nullable = true)
-    private String replyId;
+    String replyId;
 }

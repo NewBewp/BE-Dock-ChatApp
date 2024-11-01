@@ -1,5 +1,6 @@
 package com.example.springbase.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -35,6 +36,7 @@ public class User extends TimeInfoEntityDefine implements Serializable, UserDeta
     boolean isOnline = false;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     List<Workspace> workspaces;
 
     // @ManyToMany(fetch = FetchType.EAGER)

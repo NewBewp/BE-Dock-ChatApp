@@ -8,6 +8,6 @@ import com.example.springbase.entity.Message;
 import com.example.springbase.generic.IService;
 
 public interface MessageService extends IService<Message, String>{
-    MessageResponse createMessage (MessageRequest request);    
-    MessageResponse updateMessage (MessageUpdateRequest request);
+    MessageResponse sendMessage (MessageRequest request, String senderEmail,String reciverEmail, String channelId); 
+    MessageResponse updateMessage (MessageUpdateRequest request, String senderEmail);
 }

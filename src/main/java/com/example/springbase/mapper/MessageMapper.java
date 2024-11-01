@@ -27,7 +27,7 @@ public class MessageMapper {
         message.setContent(request.getContent());
         message.setMessageType(request.getMessageType());
         message.setFileUrl(request.getFileUrl());
-        message.setGroup(request.isGroup());
+
         message.setPrivate(request.isPrivate());
 
         User sender = userRepository.findByEmail(request.getSenderEmail()).orElse(null);
@@ -47,7 +47,6 @@ public class MessageMapper {
         response.setContent(message.getContent());
         response.setMessageType(message.getMessageType());
         response.setFileUrl(message.getFileUrl());
-        response.setGroup(message.isGroup());
         response.setPrivate(message.isPrivate());
         response.setSenderEmail(message.getSender() != null ? message.getSender().getEmail() : null);
         response.setReceiverEmail(message.getReceiver() != null ? message.getReceiver().getEmail() : null);

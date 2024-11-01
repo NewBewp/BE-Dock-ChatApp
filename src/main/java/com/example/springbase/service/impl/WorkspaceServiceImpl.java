@@ -16,7 +16,10 @@ import com.example.springbase.repository.WorkspaceRepository;
 import com.example.springbase.service.AbstractService;
 import com.example.springbase.service.ChannelService;
 import com.example.springbase.service.WorkspaceService;
+
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,19 +32,16 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-// @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class WorkspaceServiceImpl extends AbstractService<Workspace, String> implements WorkspaceService {
-    @Autowired
     WorkspaceRepository workspaceRepository;
 
-    @Autowired
     UserRepository userRepository;
 
-    @Autowired
     WorkspaceMapper workspaceMapper;
 
-    @Autowired
+
     ChannelService channelService;
 
     @Override
