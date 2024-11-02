@@ -5,6 +5,7 @@ import com.example.springbase.dto.response.UserResponse;
 import com.example.springbase.entity.User;
 import com.example.springbase.generic.GenericController;
 import com.example.springbase.generic.IService;
+import com.example.springbase.model.RequestResponse;
 import com.example.springbase.service.FileUpload;
 import com.example.springbase.service.UserService;
 import com.example.springbase.util.AuthConstants;
@@ -79,10 +80,9 @@ public class UserController extends GenericController<User, String> {
 
     @PutMapping("/update-user/{id}")
     @PreAuthorize(AuthConstants.NONE)
-    public ResponseEntity<UserResponse> updateUser (@PathVariable String id, @RequestBody UserUpdateRequest request){
+    public ResponseEntity<?> updateUser (@PathVariable String id, @RequestBody UserUpdateRequest request){
         UserResponse updateUserResponse = userService.updateUser(id, request);
-        return ResponseEntity.ok(updateUserResponse);
-
+        return ResponseEntity.status(HttpStatus.OK).body(new RequestResponse(updateUserResponse));
     }
     
     
