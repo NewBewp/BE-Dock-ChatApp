@@ -51,6 +51,13 @@ public class MessageMapper {
         response.setSenderEmail(message.getSender() != null ? message.getSender().getEmail() : null);
         response.setReceiverEmail(message.getReceiver() != null ? message.getReceiver().getEmail() : null);
         response.setChannelId(message.getChannel() != null ? message.getChannel().getId() : null);
+
+        if (message.getSender() != null) {
+            String senderName = message.getSender().getFirstName();
+            response.setSenderName(senderName != null ? senderName : message.getSender().getEmail());
+            response.setSenderAvatar(message.getSender().getAvatarURL());
+        }
+
         return response;
     }
 }

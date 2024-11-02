@@ -23,4 +23,7 @@ public class MessageResponse {
     boolean isPrivate;
     boolean isReply;
     String replyId;
+
+    String senderName;
+    String senderAvatar;
 }

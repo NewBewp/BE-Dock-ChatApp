@@ -22,6 +22,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -95,7 +98,35 @@ public class MessageServiceImpl extends AbstractService<Message, String> impleme
 
     @Override
     public MessageResponse updateMessage(MessageUpdateRequest request, String senderEmail) {
-        return null;
+        // Tìm tin nhắn theo ID
+        Message message = messageRepository.findById(request.getMessageId())
+                .orElseThrow(() -> new ErrorHandler(HttpStatus.NOT_FOUND, "Message not found"));
+
+        // Kiểm tra xem người gửi có quyền sửa tin nhắn không
+        if (!message.getSender().getEmail().equals(senderEmail)) {
+            throw new ErrorHandler(HttpStatus.FORBIDDEN, "You do not have permission to edit this message");
+        }
+
+        // Cập nhật nội dung tin nhắn
+        message.setContent(request.getContent());
+        messageRepository.save(message); // Lưu thay đổi
+
+        return messageMapper.toResponse(message); // Trả về phản hồi
     }
 
+    @Override
+    public List<MessageResponse> getMessagesByChannelId(String channelId) {
+        List<Message> messages = messageRepository.findByChannelId(channelId); // Giả sử bạn đã định nghĩa phương thức này trong MessageRepository
+        return messages.stream()
+                .map(messageMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<MessageResponse> getPrivateMessages(String senderEmail, String receiverEmail) {
+        List<Message> messages = messageRepository.findPrivateMessages(senderEmail, receiverEmail); // Gọi phương thức từ repository
+        return messages.stream()
+                .map(messageMapper::toResponse)
+                .collect(Collectors.toList());
+    }
 } 

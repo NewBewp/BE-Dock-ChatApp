@@ -68,8 +68,8 @@ public class UserController extends GenericController<User, String> {
         // Cập nhật URL vào cơ sở dữ liệu
         User user = userService.findOne(id);
         if (user != null) {
-            user.setAvatarURL(imageURL); // Giả sử bạn có phương thức setAvatarUrl trong User
-            userService.save(user); // Lưu người dùng với URL mới
+            user.setAvatarURL(imageURL);
+            userService.save(user);
             log.info("Updated avatar URL for user {}: {}", id, imageURL);
             return imageURL; // Trả về URL của avatar
         } else {

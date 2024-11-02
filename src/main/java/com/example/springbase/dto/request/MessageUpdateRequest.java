@@ -1,6 +1,6 @@
 package com.example.springbase.dto.request;
 
-
+import com.example.springbase.util.MessageType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,13 +12,6 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MessageUpdateRequest {
-    String content; 
-    String senderEmail;
-    String receiverEmail;
-    String channelId;
-    String fileUrl;
-    boolean isGroup;
-    boolean isPrivate;
-    boolean isReply;
-    String replyId;
+    String messageId;
+    String content;
 }
