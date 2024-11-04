@@ -82,7 +82,7 @@ public class UserController extends GenericController<User, String> {
     @PreAuthorize(AuthConstants.NONE)
     public ResponseEntity<?> updateUser (@PathVariable String id, @RequestBody UserUpdateRequest request){
         UserResponse updateUserResponse = userService.updateUser(id, request);
-        return ResponseEntity.status(HttpStatus.OK).body(new RequestResponse(updateUserResponse));
+        return ResponseEntity.status(HttpStatus.OK).body(new RequestResponse("Update User successful",updateUserResponse));
     }
     
     
